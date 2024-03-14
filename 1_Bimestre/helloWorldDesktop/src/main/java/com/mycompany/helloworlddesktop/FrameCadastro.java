@@ -15,6 +15,7 @@ public class FrameCadastro extends javax.swing.JFrame {
 
     private DefaultTableModel modelo = 
             new DefaultTableModel();
+    private int linhaSelecionada = -1;
     
     
     public FrameCadastro() {
@@ -54,6 +55,7 @@ public class FrameCadastro extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbAlunos = new javax.swing.JTable();
+        btEditar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new java.awt.GridLayout(2, 1, 5, 0));
@@ -110,7 +112,7 @@ public class FrameCadastro extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tfRa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tfNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
                 .addComponent(btSalvar)
                 .addContainerGap())
         );
@@ -132,13 +134,24 @@ public class FrameCadastro extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tbAlunos);
 
+        btEditar.setText("Editar");
+        btEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btEditarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btEditar)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -146,7 +159,9 @@ public class FrameCadastro extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btEditar)
+                .addContainerGap(9, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel2);
@@ -158,22 +173,51 @@ public class FrameCadastro extends javax.swing.JFrame {
         
         String ra = tfRa.getText();
         String nome = tfNome.getText();
-        modelo.addRow(new Object[]{ra, nome});
-      
+        
+        if(linhaSelecionada >= 0){
+            modelo.removeRow(linhaSelecionada);
+            modelo.insertRow(linhaSelecionada, 
+                    new Object[]{ra, nome});
+        }else{
+             modelo.addRow(new Object[]{ra, nome});
+        }
+        
         JOptionPane.showMessageDialog(this,
                 "Aluno Cadastrado com sucesso!!");
         tfRa.setText("");
         tfNome.setText("");
         tfRa.requestFocus();
+        linhaSelecionada = -1;
     }//GEN-LAST:event_btSalvarActionPerformed
 
     private void tfRaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfRaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_tfRaActionPerformed
 
+    private void btEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btEditarActionPerformed
+        linhaSelecionada = -1;
+        linhaSelecionada = tbAlunos.getSelectedRow();
+        if(linhaSelecionada >= 0){
+            //retorna os valores das colunas da linha selecionada
+            String ra = (String)tbAlunos
+                    .getValueAt(linhaSelecionada, 0);
+            String nome = (String)tbAlunos
+                    .getValueAt(linhaSelecionada, 1);
+            
+            tfRa.setText(ra);
+            tfNome.setText(nome);
+        }else{
+            JOptionPane
+                    .showMessageDialog(this, 
+                            "Selecione um registro na tabela!");
+        }
+        
+    }//GEN-LAST:event_btEditarActionPerformed
+
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btEditar;
     private javax.swing.JButton btSalvar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

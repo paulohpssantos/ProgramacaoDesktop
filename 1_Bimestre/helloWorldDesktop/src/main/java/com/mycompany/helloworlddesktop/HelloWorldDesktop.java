@@ -11,6 +11,7 @@ package com.mycompany.helloworlddesktop;
 public class HelloWorldDesktop {
 
     public static void main(String[] args) {
+        //new FrameHelloWorld().setVisible(true);
         new FrameCadastro().setVisible(true);
     }
 }
