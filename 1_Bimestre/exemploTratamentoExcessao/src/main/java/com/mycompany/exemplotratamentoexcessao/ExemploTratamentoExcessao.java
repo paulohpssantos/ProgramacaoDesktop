@@ -2,15 +2,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  */
 
-package com.mycompany.exemplotable;
+package com.mycompany.exemplotratamentoexcessao;
 
 /**
  *
  * @author paulodossantos
  */
-public class Exemplotable {
+public class ExemploTratamentoExcessao {
 
     public static void main(String[] args) {
-        new PrincipalFrame().setVisible(true);
+        new FramePrincipal().setVisible(true);
     }
 }
