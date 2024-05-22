@@ -13,8 +13,8 @@ import java.util.logging.Logger;
  */
 public class ConexaoPostgres {
     
-    private static final String DRIVER = "org.postgres.Driver";
-    private static final String URL = "jdbc:postgres://localhost:5432/UniparBD";
+    private static final String DRIVER = "org.postgresql.Driver";
+    private static final String URL = "jdbc:postgresql://localhost:5432/UniparBD";
     private static final String USER = "postgres";
     private static final String PASSWORD = "admin";
     
