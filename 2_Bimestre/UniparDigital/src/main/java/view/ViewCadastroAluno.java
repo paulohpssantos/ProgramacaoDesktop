@@ -7,6 +7,8 @@ package view;
 import dao.AlunoDAO;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import modelo.Aluno;
 
@@ -17,6 +19,8 @@ import modelo.Aluno;
 public class ViewCadastroAluno extends javax.swing.JFrame {
 
     private AlunoDAO alunoDao = new AlunoDAO();
+    private boolean alunoPesquisado;
+    private ArrayList<Aluno>lista;
     
     public ViewCadastroAluno() {
         initComponents();
@@ -28,7 +32,8 @@ public class ViewCadastroAluno extends javax.swing.JFrame {
     public void atualizaGrid(){
         try{
             String sql = "SELECT * FROM public.\"Aluno\" ORDER BY \"RA_ALUNO\";";
-            ArrayList<Aluno>lista = alunoDao.retornaLista(sql);
+            lista = new ArrayList<>();
+            lista = alunoDao.retornaLista(sql);
             
             //Manipulação da tabela
             tbAlunos.removeAll();
@@ -38,12 +43,27 @@ public class ViewCadastroAluno extends javax.swing.JFrame {
                               new Object[][]{},
                               new String[]{"RA", "Nome", "Dt. Nascimento"}));
             
+            
             //Adiciona as linhas a tabela com os dados dos alunos
             DefaultTableModel dm = (DefaultTableModel)tbAlunos.getModel();
+            
+            
             for (Aluno aluno : lista) {
                 dm.addRow(new Object[]{aluno.getRaAluno(), aluno.getNomeAluno(),
                 aluno.getDtNascAluno()});
+                
+                
             }
+            
+            tbAlunos.getSelectionModel()
+                    .addListSelectionListener(new ListSelectionListener() {
+                @Override
+                public void valueChanged(ListSelectionEvent e) {
+                    int linhaSelecionada = tbAlunos.getSelectedRow();
+                    if(linhaSelecionada != -1)
+                        mostrarAluno(lista.get(linhaSelecionada));
+                }
+            });
             
         }catch(Exception ex){
             
@@ -56,9 +76,19 @@ public class ViewCadastroAluno extends javax.swing.JFrame {
         tfRaAluno.setText("");
         tfNomeAluno.setText("");
         tfDtNascAluno.setText("");
+        tfRaAluno.setEditable(true);
+        btSalvar.setEnabled(true);
     }
     
-   
+    private void mostrarAluno(Aluno aluno){
+        tfRaAluno.setText(String.valueOf(aluno.getRaAluno()));
+        tfNomeAluno.setText(aluno.getNomeAluno());
+        tfDtNascAluno.setText(aluno.getDtNascAluno());
+        tfRaAluno.setEditable(false);
+        btSalvar.setEnabled(false);
+        alunoPesquisado = true;
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -116,6 +146,11 @@ public class ViewCadastroAluno extends javax.swing.JFrame {
 
         btAtualizar.setText("Atualizar");
         btAtualizar.setPreferredSize(new java.awt.Dimension(90, 23));
+        btAtualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btAtualizarActionPerformed(evt);
+            }
+        });
 
         btSalvar.setText("Salvar");
         btSalvar.setPreferredSize(new java.awt.Dimension(90, 23));
@@ -196,7 +231,15 @@ public class ViewCadastroAluno extends javax.swing.JFrame {
             new String [] {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(tbAlunos);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -231,7 +274,24 @@ public class ViewCadastroAluno extends javax.swing.JFrame {
     }//GEN-LAST:event_tfDtNascAlunoActionPerformed
 
     private void btRemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRemoverActionPerformed
-        // TODO add your handling code here:
+        
+        if(alunoPesquisado){
+            alunoDao.delete(
+                    Integer.parseInt(tfRaAluno.getText()), 
+                    "Aluno", "RA_ALUNO");
+            
+            JOptionPane.showMessageDialog(this, 
+                       "Aluno atualizado com sucesso!");
+            limparCampos();
+            atualizaGrid();
+            
+        }else{
+            JOptionPane.showMessageDialog(this, 
+                       "Selecione um Aluno para remover!",
+                       "Atenção",
+                       JOptionPane.WARNING_MESSAGE);
+        }
+        
     }//GEN-LAST:event_btRemoverActionPerformed
 
     private void btSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSalvarActionPerformed
@@ -256,6 +316,37 @@ public class ViewCadastroAluno extends javax.swing.JFrame {
         limparCampos();
         
     }//GEN-LAST:event_btSalvarActionPerformed
+
+    private void btAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAtualizarActionPerformed
+        
+        if(alunoPesquisado){
+            
+            Aluno aluno = new Aluno();
+            aluno.setRaAluno(Integer.parseInt(tfRaAluno.getText()));
+            aluno.setNomeAluno(tfNomeAluno.getText());
+            aluno.setDtNascAluno(tfDtNascAluno.getText());
+            
+            if(alunoDao.atualizar(aluno)){
+               JOptionPane.showMessageDialog(this, 
+                       "Aluno atualizado com sucesso!");
+               limparCampos();
+               atualizaGrid();
+            }else{
+                JOptionPane.showMessageDialog(this, 
+                       "Erro ao atualizar o aluno, "
+                               + "Solicite suporte técnico.",
+                       "Erro",
+                       JOptionPane.ERROR_MESSAGE);
+            }
+        }else{
+            JOptionPane.showMessageDialog(this, 
+                       "Selecione um Aluno para atualizar!",
+                       "Atenção",
+                       JOptionPane.WARNING_MESSAGE);
+        }
+        
+        
+    }//GEN-LAST:event_btAtualizarActionPerformed
 
     
 
