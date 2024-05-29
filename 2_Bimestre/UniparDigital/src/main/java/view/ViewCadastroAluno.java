@@ -14,6 +14,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import modelo.Aluno;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 import service.EnderecoService;
 
 /**
@@ -188,6 +190,11 @@ public class ViewCadastroAluno extends javax.swing.JFrame {
         btPesquisar.setMinimumSize(new java.awt.Dimension(90, 23));
         btPesquisar.setPreferredSize(new java.awt.Dimension(90, 23));
         btPesquisar.setSize(new java.awt.Dimension(80, 23));
+        btPesquisar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btPesquisarActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("CEP");
 
@@ -441,6 +448,10 @@ public class ViewCadastroAluno extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_tfCepKeyPressed
+
+    private void btPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btPesquisarActionPerformed
+         
+    }//GEN-LAST:event_btPesquisarActionPerformed
 
     
 
